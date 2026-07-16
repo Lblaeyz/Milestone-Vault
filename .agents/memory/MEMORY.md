@@ -1,0 +1,2 @@
+- [MilestoneVault contracts](milestone-vault-contracts.md) — Hardhat requires HARDHAT_DISABLE_TELEMETRY_PROMPT=true in non-interactive shells; private key must be passed inline.
+- [Wagmi RainbowKit demo setup](wagmi-rainbowkit-demo.md) — WalletConnect 403 warning is expected when using a fake projectId; harmless for demos.

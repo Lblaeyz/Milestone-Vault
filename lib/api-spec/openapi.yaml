@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: MilestoneVault API — off-chain metadata for on-chain escrow agreements
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: agreements
+    description: Agreement metadata (off-chain)
+  - name: requests
+    description: Request metadata (off-chain)
 paths:
   /healthz:
     get:
@@ -24,6 +28,134 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /agreements:
+    get:
+      operationId: listAgreements
+      tags: [agreements]
+      summary: List all agreement metadata
+      parameters:
+        - name: investor
+          in: query
+          schema:
+            type: string
+          description: Filter by investor address
+        - name: builder
+          in: query
+          schema:
+            type: string
+          description: Filter by builder address
+      responses:
+        "200":
+          description: List of agreements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agreement"
+    post:
+      operationId: createAgreementMeta
+      tags: [agreements]
+      summary: Store agreement metadata after on-chain creation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgreementInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
+
+  /agreements/{address}:
+    get:
+      operationId: getAgreement
+      tags: [agreements]
+      summary: Get agreement metadata by contract address
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Agreement metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /agreements/{address}/requests:
+    get:
+      operationId: listAgreementRequests
+      tags: [requests]
+      summary: List request metadata for an agreement
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of request metadata
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RequestMeta"
+    post:
+      operationId: createRequestMeta
+      tags: [requests]
+      summary: Store request metadata after on-chain request creation
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestMetaInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestMeta"
+
+  /agreements/all/disputed:
+    get:
+      operationId: listDisputedAgreements
+      tags: [agreements]
+      summary: List all agreements that have disputed requests (for arbiter panel)
+      responses:
+        "200":
+          description: List of agreements with dispute info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agreement"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +166,111 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Agreement:
+      type: object
+      properties:
+        id:
+          type: integer
+        contractAddress:
+          type: string
+        investorAddress:
+          type: string
+        builderAddress:
+          type: string
+        projectName:
+          type: string
+        description:
+          type: string
+        txHash:
+          type: ["string", "null"]
+        chainId:
+          type: integer
+        createdAt:
+          type: string
+      required:
+        - id
+        - contractAddress
+        - investorAddress
+        - builderAddress
+        - projectName
+        - description
+        - chainId
+        - createdAt
+
+    AgreementInput:
+      type: object
+      properties:
+        contractAddress:
+          type: string
+        investorAddress:
+          type: string
+        builderAddress:
+          type: string
+        projectName:
+          type: string
+        description:
+          type: string
+        txHash:
+          type: string
+        chainId:
+          type: integer
+      required:
+        - contractAddress
+        - investorAddress
+        - builderAddress
+        - projectName
+        - description
+        - chainId
+
+    RequestMeta:
+      type: object
+      properties:
+        id:
+          type: integer
+        agreementAddress:
+          type: string
+        onchainRequestId:
+          type: integer
+        requestType:
+          type: string
+          enum: [milestone, adhoc]
+        milestoneIndex:
+          type: ["integer", "null"]
+        reason:
+          type: ["string", "null"]
+        evidenceUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - agreementAddress
+        - onchainRequestId
+        - requestType
+        - createdAt
+
+    RequestMetaInput:
+      type: object
+      properties:
+        onchainRequestId:
+          type: integer
+        requestType:
+          type: string
+          enum: [milestone, adhoc]
+        milestoneIndex:
+          type: ["integer", "null"]
+        reason:
+          type: string
+        evidenceUrl:
+          type: string
+      required:
+        - onchainRequestId
+        - requestType

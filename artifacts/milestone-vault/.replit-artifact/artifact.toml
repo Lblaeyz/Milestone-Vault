@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "MilestoneVault"
+version = "1.0.0"
+id = "artifacts/milestone-vault"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20863
+
+[services.development]
+run = "pnpm --filter @workspace/milestone-vault run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/milestone-vault", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/milestone-vault/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20863"
+BASE_PATH = "/"

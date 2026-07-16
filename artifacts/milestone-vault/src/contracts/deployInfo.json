@@ -1,0 +1,8 @@
+{
+  "factoryAddress": "0x1AD5A34e16541a52eF91D1E81bd86d6c35C1D1fC",
+  "arbiterAddress": "0x5a554d0b250Ec2fFd0796EBE053C1C2890A011dE",
+  "chainId": 10143,
+  "network": "monadTestnet",
+  "deployedAt": "2026-07-16T15:52:00.820Z",
+  "deployer": "0x55B9dBE89a7fEe5Cca799648Dc0c5Fa3Fc69462E"
+}
