@@ -61,11 +61,12 @@ async function main() {
   const builderWallet = ethers.Wallet.createRandom().connect(ethers.provider);
   console.log("\nBuilder wallet (generated):", builderWallet.address);
 
-  // Fund builder with enough for gas (accept + 2x request + dispute = ~5 txs)
-  console.log("Funding builder with 0.03 MON for gas...");
+  // Fund builder generously — Monad testnet gas is expensive (~0.02 MON/tx)
+  // Need: accept + 2x requestPayout + raiseDispute = 4 txs = ~0.08 MON minimum
+  console.log("Funding builder with 0.1 MON for gas...");
   const fundTx = await investor.sendTransaction({
     to: builderWallet.address,
-    value: ethers.parseEther("0.03"),
+    value: ethers.parseEther("0.1"),
   });
   await fundTx.wait();
   console.log("  Builder funded");
