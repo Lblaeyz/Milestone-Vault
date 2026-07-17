@@ -45,7 +45,7 @@ Open the dashboard: `/agreement/0xa528c8cfd14810eca89f56d53f841d97497d97af`
 
 ## Live URL
 
-> Set after deployment.
+> https://milestone-vault--nact.replit.app/.
 
 ---
 
