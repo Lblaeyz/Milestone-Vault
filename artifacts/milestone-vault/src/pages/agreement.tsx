@@ -124,15 +124,33 @@ export default function AgreementDashboard() {
   // ── Activity feed ─────────────────────────────────────────────────────────────
   const [events, setEvents] = useState<ChainEvent[]>([]);
 
+  // Monad testnet caps eth_getLogs at a 100-block range — chunk it.
   const fetchEvents = useCallback(async () => {
     if (!address || !publicClient) return;
     try {
-      const logs = await publicClient.getLogs({
-        address: address as `0x${string}`,
-        fromBlock: 0n,
-        toBlock: 'latest',
-      });
-      const parsed = parseEventLogs({ abi: MilestoneVaultAbi.abi as any, logs, strict: false });
+      const latestBlock = await publicClient.getBlockNumber();
+      // Keep to 1500 blocks (~25 min). If vault is older, events may not show —
+      // acceptable for a fresh demo; avoids hammering the RPC with 200 calls.
+      const LOOKBACK  = 1500n;
+      const CHUNK     = 99n;
+      const fromBlock = latestBlock > LOOKBACK ? latestBlock - LOOKBACK : 0n;
+
+      // Build chunk list (~15 chunks max)
+      const chunks: Array<{ from: bigint; to: bigint }> = [];
+      for (let f = fromBlock; f <= latestBlock; f += CHUNK + 1n) {
+        chunks.push({ from: f, to: f + CHUNK <= latestBlock ? f + CHUNK : latestBlock });
+      }
+
+      // Fetch all chunks in parallel (≤ 15 calls — within Monad RPC rate limit)
+      const results = await Promise.all(
+        chunks.map(c =>
+          publicClient.getLogs({ address: address as `0x${string}`, fromBlock: c.from, toBlock: c.to })
+            .catch(() => [] as any[])
+        )
+      );
+      const allLogs = results.flat();
+
+      const parsed = parseEventLogs({ abi: MilestoneVaultAbi.abi as any, logs: allLogs, strict: false });
       const items: ChainEvent[] = parsed
         .map((e, idx) => ({
           eventName: e.eventName,

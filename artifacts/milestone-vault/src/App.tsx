@@ -1,22 +1,49 @@
+import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import NotFound from '@/pages/not-found';
-import { Route, Switch, Router as WouterRouter } from 'wouter';
+import { Route, Switch, Router as WouterRouter, useLocation } from 'wouter';
+import { useAccount } from 'wagmi';
+import { ARBITER_ADDRESS } from '@/contracts/config';
 import Home from '@/pages/home';
 import CreateAgreement from '@/pages/create';
 import AgreementDashboard from '@/pages/agreement';
 import ArbiterPanel from '@/pages/arbiter';
-import BuilderAgreements from '@/pages/agreements';
+import InvestorDashboard from '@/pages/investor';
+import BuilderDashboard from '@/pages/builder';
+import NotFound from '@/pages/not-found';
+
+// ── Route guard: only arbiter wallet can access /arbiter ──────────────────────
+function ArbiterRoute() {
+  const { address, isConnected } = useAccount();
+  const [, navigate] = useLocation();
+
+  const isArbiter = !!address && address.toLowerCase() === ARBITER_ADDRESS.toLowerCase();
+
+  useEffect(() => {
+    // Redirect if a wallet IS connected but it's not the arbiter wallet
+    if (isConnected && !isArbiter) {
+      navigate('/');
+    }
+  }, [isConnected, isArbiter, navigate]);
+
+  // Render nothing while redirecting — ArbiterPanel handles the "no wallet" state
+  if (isConnected && !isArbiter) return null;
+
+  return <ArbiterPanel />;
+}
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/investor" component={InvestorDashboard} />
+      <Route path="/builder" component={BuilderDashboard} />
       <Route path="/create" component={CreateAgreement} />
-      <Route path="/agreements" component={BuilderAgreements} />
       <Route path="/agreement/:address" component={AgreementDashboard} />
-      <Route path="/arbiter" component={ArbiterPanel} />
+      <Route path="/arbiter" component={ArbiterRoute} />
+      {/* Legacy redirect */}
+      <Route path="/agreements" component={BuilderDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
