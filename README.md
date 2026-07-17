@@ -213,3 +213,7 @@ Open `/agreement/<address from seedInfo.json>`:
 | All writes wait for `waitForTransactionReceipt` | No fake success toasts; UI only updates on confirmation |
 | Off-chain DB for metadata only | Names, descriptions, evidence links — nothing financial |
 | Spectator mode by default | Dashboards are public; wallet only required for writes |
+
+## 🎥 Demo Video
+
+[Watch the demo on YouTube](https://youtu.be/sJEX4_E3a7w)
