@@ -29,9 +29,23 @@ A milestone-based escrow dApp on **Monad Testnet**. Investors lock native MON to
 
 ---
 
+## Demo Vault (live on Monad Testnet)
+
+| Field | Value |
+|---|---|
+| Vault address | [`0xa528c8cfd14810eca89f56d53f841d97497d97af`](https://testnet.monadscan.com/address/0xa528c8cfd14810eca89f56d53f841d97497d97af) |
+| Status | Active |
+| Deposited | 2.0 MON |
+| Released | 0.2 MON |
+| Locked | 1.8 MON |
+
+Open the dashboard: `/agreement/0xa528c8cfd14810eca89f56d53f841d97497d97af`
+
+---
+
 ## Live URL
 
-> Set after deployment to Replit or Vercel.
+> Set after deployment.
 
 ---
 

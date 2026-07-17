@@ -1,0 +1,16 @@
+{
+  "vaultAddress": "0xa528c8cfd14810eca89f56d53f841d97497d97af",
+  "investorAddress": "0x56807f2068cdC7418862D6B9E7Fc43a620c3FD05",
+  "builderAddress": "0x6C7a4A96e56F9C6F3Df8DbD6bBf31d913987C88f",
+  "projectName": "project x",
+  "description": "the begining",
+  "depositAmount": "2.0 MON",
+  "state": {
+    "status": "Active",
+    "released": "0.2 MON",
+    "locked": "1.8 MON"
+  },
+  "dashboardUrl": "/agreement/0xa528c8cfd14810eca89f56d53f841d97497d97af",
+  "explorerUrl": "https://testnet.monadscan.com/address/0xa528c8cfd14810eca89f56d53f841d97497d97af",
+  "note": "Live on-chain — status Active, 2 MON deposited, 0.2 MON released. Open the dashboard URL for the full live view."
+}
