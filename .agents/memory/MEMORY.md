@@ -1,2 +1,4 @@
 - [MilestoneVault contracts](milestone-vault-contracts.md) — Hardhat requires HARDHAT_DISABLE_TELEMETRY_PROMPT=true in non-interactive shells; private key must be passed inline.
 - [Wagmi RainbowKit demo setup](wagmi-rainbowkit-demo.md) — WalletConnect 403 warning is expected when using a fake projectId; harmless for demos.
+- [Monad testnet gas costs](monad-gas-costs.md) — ~0.225 MON/tx (July 2026 congestion); budget 0.3 MON/tx, seed scripts need 1+ MON in builder wallet.
+- [Monad RPC limits](monad-rpc-limits.md) — eth_getLogs capped at 100-block range (-32614); chunk to 99 blocks, batch ≤15 calls to avoid 429.
